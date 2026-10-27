@@ -19,9 +19,9 @@ Open http://localhost:8766. Use the same browser and address to retain progress.
 - Each world follows Mission -> Learn + watch -> Understand + try -> Prove + capture.
 - Completing a new experiment earns 60 XP. Demonstrating a new skill independently earns 25 XP, once. Each captured world crystal earns 150 XP, once.
 - Every 250 XP advances a player level. Replaying completed skills does not farm XP.
-- Capture a world crystal by completing its experiment and independently demonstrating its five skills. Captures have a reward screen and appear on the trophy shelf.
-- Memory quests unlock after capture, at approximately days 1, 3 and 7. Passing with at least four of five independent answers earns a one-time 100 XP seal at each stage. A missed review moves the next attempt to the following day. Replays cannot advance the schedule early.
-- Seven captured crystals unlock the Glitch Engine: a 14-question boss challenge, two questions per world. At least 12 independent answers in a fully completed run wins a one-time 300 XP reward.
+- Capture a world crystal by completing its experiment and a flawless ten-question qualification run. Captures have a reward screen and appear on the trophy shelf.
+- Memory quests unlock after capture, at approximately days 1, 3, 7, 14 and 30. Passing with ten of ten independent answers earns a one-time 100 XP seal at each stage. A recall error restarts the ladder with the next attempt on the following day. Replays cannot advance the schedule early.
+- Seven captured crystals unlock the Glitch Engine: a 35-question boss challenge, one application per skill family. All 35 independent answers in one flawless run wins a one-time 300 XP reward.
 - Guided video recap questions support learning and do not award mastery or XP.
 
 ## Included
@@ -29,14 +29,14 @@ Open http://localhost:8766. Use the same browser and address to retain progress.
 - Seven stations with briefing, original lesson notes, worked examples, an interactive experiment and generated independent checks.
 - SI quantities and units, prefixes and standard form, dimensional conversions, instrument selection, scales and parallax, pendulum timing, scalars and parallel vectors.
 - Original SVG apparatus, keyboard/touch controls, pause/step animation and reduced-motion support.
-- Targeted fresh questions for skills not yet independently demonstrated.
+- Topic practice with hints, alongside strict qualification runs.
 - Saved in-progress questions, first-try versus assisted tracking, a personal journal and progress JSON export.
 - Google player accounts, cross-device Physics saves, and a live teacher dashboard using the maths Firebase project and its existing access rules.
 - A ten-question mixed quick check, untimed or timed for ten minutes.
 - Seven original pixel-art platform worlds, player movement, suit colours, skill gems, crystal captures, levels, boss battle and scheduled memory seals.
 - Seven topic-matched concept videos and a bonus pendulum-wave YouTube Short, with creator attribution, click-to-load players and direct link fallbacks.
 
-A station is certified when its experiment is complete and all five skills have been demonstrated on a fresh question, first try, without a hint. This can happen across several checks. First-try stats retain earlier mistakes.
+A station is qualified through a single 10/10 clean run; its experiment is also required for a crystal. One error or hint resets the run. First-try stats retain earlier mistakes.
 
 ## Current limits
 
@@ -72,8 +72,12 @@ node check-game.cjs
 node check-cloud.cjs
 ```
 
-This validates 1,400 generated questions across 35 skills, including dimensional factors, standard-form reconstruction, elapsed time, diagram bounds, distinct choices and topic coverage. Browser checks also covered all seven experiments, an entire station check plus targeted retry and certification, saved answers after reload, timed-mode resume, and the journal's first-try/assisted counts.
+This validates 1,400 generated questions across 35 skills, including dimensional factors, standard-form reconstruction, elapsed time, diagram bounds, distinct choices and topic coverage. Earlier browser checks (before the strict mastery redesign) also covered all seven experiments, an entire station check plus targeted retry and certification, saved answers after reload, timed-mode resume, and the journal's first-try/assisted counts.
 
-The game checks cover non-duplicated crystal/XP rewards, migration, level calculation, early and failed recall attempts, the full 1/3/7-day memory schedule, player jumping, platform collision, world boundaries and video mappings. Arcade browser checks covered a complete world capture, XP increases, a level-up, the reward dialog, preserved earlier progress, scheduled memory quests, boss gating, and a video recap without XP.
+The game checks cover non-duplicated crystal/XP rewards, migration, level calculation, early and failed recall attempts, the full 1/3/7/14/30-day memory schedule, player jumping, platform collision, world boundaries and video mappings. Earlier arcade browser checks covered a complete world capture, XP increases, a level-up, the reward dialog, preserved earlier progress, scheduled memory quests, boss gating, and a video recap without XP.
 
 Original exercises and diagrams are informed by the supplied chapter. The game does not reproduce textbook pages.
+
+## Strict mastery update
+
+See [CURRICULUM.md](CURRICULUM.md) for source mapping, ten-in-a-row qualification, one-error resets, 35/35 boss, 30-day retention and migration rules. Practice XP is separate from qualification and retained mastery. Run `node check-mastery.cjs` for the new gate and recall tests.
