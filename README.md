@@ -10,7 +10,7 @@ From this folder:
 python3 -m http.server 8766 --bind 127.0.0.1
 ```
 
-Open http://localhost:8766. Use the same browser and address to retain progress. No packages, build step, API keys or sign-in are needed. Game art and lessons are local; optional embedded YouTube videos need internet access. Progress uses the separate `kavin_physics_v1` local-storage key and does not modify the quadratics game. Existing local progress is preserved by the arcade upgrade.
+Open http://localhost:8766. Use the same browser and address to retain progress. No packages or build step are needed. Sign in with the same approved Google account as the maths game. Firebase Authentication manages login, and Firestore syncs progress to the player account. Game art and lessons are local; sign-in, cloud saves and optional YouTube videos need internet access. Physics uses a separate subject payload and account-specific browser cache. See [account setup and recovery](ACCOUNT-SETUP.md).
 
 ## Play the quest
 
@@ -30,16 +30,17 @@ Open http://localhost:8766. Use the same browser and address to retain progress.
 - SI quantities and units, prefixes and standard form, dimensional conversions, instrument selection, scales and parallax, pendulum timing, scalars and parallel vectors.
 - Original SVG apparatus, keyboard/touch controls, pause/step animation and reduced-motion support.
 - Targeted fresh questions for skills not yet independently demonstrated.
-- Saved in-progress questions, first-try versus assisted tracking, a local parent journal and progress JSON export.
+- Saved in-progress questions, first-try versus assisted tracking, a personal journal and progress JSON export.
+- Google player accounts, cross-device Physics saves, and a live teacher dashboard using the maths Firebase project and its existing access rules.
 - A ten-question mixed quick check, untimed or timed for ten minutes.
 - Seven original pixel-art platform worlds, player movement, suit colours, skill gems, crystal captures, levels, boss battle and scheduled memory seals.
 - Seven topic-matched concept videos and a bonus pendulum-wave YouTube Short, with creator attribution, click-to-load players and direct link fallbacks.
 
 A station is certified when its experiment is complete and all five skills have been demonstrated on a fresh question, first try, without a hint. This can happen across several checks. First-try stats retain earlier mistakes.
 
-## Local edition limits
+## Current limits
 
-No cloud accounts or cross-device sync yet. The quick check and boss battle do not replace the proposed full structured mock paper. Free-text explanations are taught through notes and structured questions rather than automatically graded. The pendulum animation is a teaching model, not a reaction-time measurement tool. Videos were selected using creator titles/descriptions and topic fit; a full viewing review is still pending. One embedded pendulum player was verified to load and expose playback controls; availability of other embeds may vary. Memory quests are in-app dates, with no external reminders or notifications.
+The quick check and boss battle do not replace the proposed full structured mock paper. Free-text explanations are taught through notes and structured questions rather than automatically graded. The pendulum animation is a teaching model, not a reaction-time measurement tool. Videos were selected using creator titles/descriptions and topic fit; a full viewing review is still pending. One embedded pendulum player was verified to load and expose playback controls; availability of other embeds may vary. Memory quests are in-app dates, with no external reminders or notifications.
 
 ## GitHub Pages
 
@@ -49,7 +50,7 @@ Game URL: https://prasarju469.github.io/kavin-physics/
 
 GitHub Pages serves the root of `main`, matching the maths game’s deployment setup. All links and script paths are relative, and routing uses URL hashes so direct world links work under the repository path. Push updates to `main` to trigger a Pages rebuild. The textbook PDF and local progress exports are excluded.
 
-Progress is saved per browser and site address. Localhost progress does not automatically transfer to the published site.
+Each approved Google account has its own cloud progress and browser backup. Earlier anonymous progress can be explicitly imported when starting a new student account. Localhost anonymous progress does not automatically transfer to GitHub Pages.
 
 ## Files
 
@@ -61,12 +62,14 @@ Progress is saved per browser and site address. Localhost progress does not auto
 - `arcade.css`: pixel-platform art direction and game layouts.
 - `game.js`: one-time rewards, player ranks, recall scheduling, sprite art and platform movement.
 - `videos.js`: creator-attributed videos and guided concept recap cards.
+- `firebase-config.js` and `cloud.js`: Google account login, isolated subject saves and teacher subscriptions.
 
 ## Check the question bank
 
 ```sh
 node check-content.cjs
 node check-game.cjs
+node check-cloud.cjs
 ```
 
 This validates 1,400 generated questions across 35 skills, including dimensional factors, standard-form reconstruction, elapsed time, diagram bounds, distinct choices and topic coverage. Browser checks also covered all seven experiments, an entire station check plus targeted retry and certification, saved answers after reload, timed-mode resume, and the journal's first-try/assisted counts.
