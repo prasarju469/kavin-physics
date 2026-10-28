@@ -8,3 +8,7 @@ The same Maze Chase, Snake, Block Breaker and Tetris engines are copied from Edi
 - Parent cannot spend the earned balance. Fictional test credit runs out at zero and stops Play; exiting test mode restores the unchanged earned balance.
 
 XP and tokens are subject-local. The client and existing Firebase account rules handle persistence; this change does not add server-side assessment validation or anti-cheat authority.
+
+## Layout alignment
+
+Tokens now have an independent yellow header card and Games appears in the subject navigation. The arcade renders inline in the learning area, using locally bundled Editing fonts, paper colour, ink borders, shadows, and active states. Coding's XP and exercise count have separate cards. Reviewed Coding at desktop and 390px, Physics desktop, lesson-to-Games switching and return, and retained token balances.
