@@ -12,3 +12,5 @@ XP and tokens are subject-local. The client and existing Firebase account rules 
 ## Layout alignment
 
 Tokens now have an independent yellow header card and Games appears in the subject navigation. The arcade renders inline in the learning area, using locally bundled Editing fonts, paper colour, ink borders, shadows, and active states. Coding's XP and exercise count have separate cards. Reviewed Coding at desktop and 390px, Physics desktop, lesson-to-Games switching and return, and retained token balances.
+
+Shared shell verification: compared all four subjects at desktop and 390px phone width using isolated fixtures with fictional progress and Firebase disabled. Reviewed Maths rules and Physics lessons for contrast, checked Editing set switching and tower flow, and checked Coding lesson-to-Games navigation. Shared CSS/JS are byte-identical across all four repositories. Subject reward, token, content and cloud checks pass.

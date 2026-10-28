@@ -91,3 +91,7 @@ See [CURRICULUM.md](CURRICULUM.md) for source mapping, ten-in-a-row qualificatio
 Maze Chase, Snake, Block Breaker and Tetris reuse Editing’s game engines. Each subject has its own wallet: one token per earned XP, including a one-time matching credit for preserved XP. Games cost 80 tokens per minute (750 ms per token), charged only during active play; pausing, leaving the tab and returning to learning stop play. XP is never deducted. Saved balances do not expire. No XP or token transfers between subjects.
 
 The `gameTokens` field is separate from Physics’s existing `arcade` learning progress. Per-session spending counters merge with cloud saves without refunding stale spending; browser locks prevent simultaneous play in two tabs of the same subject/account. Parent testing uses a separate fictional balance. Run `node check-tokens.cjs` for credit, isolation, spending, reload and merge checks. Existing Editing balances and its arcade are unchanged.
+
+## Common Editing presentation
+
+All four subjects use `learning-shell.css` and `learning-shell.js`: Editing’s paper palette, local fonts, independent XP/completion/token cards, header account actions, navigation tabs, buttons, surfaces and responsive rules. The tower climb, physics realms, maths map and Coding runner remain subject-specific. Existing XP, token and completion records are unchanged. Canonical shell sources live in `../shared-learning/shell`; run its `sync.py` after changing the shared CSS or JS to keep the four checkouts aligned.
