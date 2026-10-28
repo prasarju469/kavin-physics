@@ -32,7 +32,7 @@ window.PhysicsCloud=(()=>{
     const email=norm(user.email);let role;
     try{await db.collection('users').limit(1).get({source:'server'});role='teacher';}
     catch(e){if(e.code!=='permission-denied')throw e;await db.collection('users').doc(email).get({source:'server'});role='student';}
-    C.email=email;C.name=user.displayName||email;C.role=role;account=user.uid;
+    C.email=email;C.name=user.displayName||email;C.role=role;account=user.uid;window.LearningTracker?.start({subject:'physics',email,auth,db,role});
   }
   function login(){
     return new Promise(resolve=>{
@@ -65,7 +65,7 @@ window.PhysicsCloud=(()=>{
     timer=setTimeout(()=>C.flush().catch(()=>{}),1000);
   };
   C.flush=async()=>{clearTimeout(timer);if(writing)await writing;while(pending&&auth?.currentUser?.uid===account)await write();};
-  C.signOut=async()=>{if(offAccount)offAccount();try{await C.flush();}catch{/* Account-specific local cache keeps unsent progress. */}clearTimeout(timer);pending=null;await auth.signOut();location.reload();};
+  C.signOut=async()=>{await window.LearningTracker?.flush().catch(()=>{});window.LearningTracker?.stop();if(offAccount)offAccount();try{await C.flush();}catch{/* Account-specific local cache keeps unsent progress. */}clearTimeout(timer);pending=null;await auth.signOut();location.reload();};
   C.watchStudents=(onData,onError)=>{
     if(C.role!=='teacher'){onError(new Error('Teacher access required.'));return ()=>{};}
     return db.collection('users').onSnapshot(snap=>onData(snap.docs.filter(x=>x.id!==C.email&&x.data().role!=='teacher').map(x=>({email:x.id,name:x.data().name||x.id,progress:decode(x.data()),updated:x.data().physics?.updated||0}))),onError);

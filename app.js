@@ -59,7 +59,7 @@
   }
   function answerLabel(q){if(q.type==='choice')return q.options[q.answer];return q.answer.map((a,i)=>`${Q.fmt(a)}${q.fields[i]?.unit?' '+q.fields[i].unit:''}`).join(' · ')+(q.direction?' '+q.direction:'');}
   function parseNumber(v){const t=v.trim().replace(/,/g,'');return /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i.test(t)?Number(t):NaN;}
-  function recordFirst(q,ok,hint){const s=data.stats[q.station]||(data.stats[q.station]={total:0,clean:0,assisted:0,misses:{}});s.total++;if(ok&&!hint){s.clean++;data.skills[`${q.station}:${q.skill}`]=true;}else{s.misses[q.skill]=(s.misses[q.skill]||0)+1;}save();}
+  function recordFirst(q,ok,hint){window.LearningTracker?.event('answer',{topic:q.skill,correct:ok,assisted:hint});const s=data.stats[q.station]||(data.stats[q.station]={total:0,clean:0,assisted:0,misses:{}});s.total++;if(ok&&!hint){s.clean++;data.skills[`${q.station}:${q.skill}`]=true;}else{s.misses[q.skill]=(s.misses[q.skill]||0)+1;}save();}
   function mountSession(host,key,options){
     let session=data.sessions[key];if(session&&session.masteryVersion!==2){delete data.sessions[key];session=null;}
     const strict=!!(options.station||options.boss)&&!options.practice;
@@ -84,10 +84,10 @@
     host.querySelector('form').onsubmit=e=>{e.preventDefault();if(state.done)return;if(session.deadline&&Date.now()>=session.deadline){session.finished=true;session.expired=true;save();mountSession(host,key,options);return;}cache();let ok=false,partial=false;
       if(q.type==='choice'){if(state.selection===null){toast('Choose an answer first.');return;}ok=state.selection===q.answer;}
       else{const values=state.values.map(parseNumber);if(values.some(v=>!Number.isFinite(v))){toast('Enter a number in each answer field.');return;}const numeric=values.every((v,j)=>Math.abs(v-q.answer[j])<=Math.max(q.tolerances?.[j]||0,Math.abs(q.answer[j])*1e-7,1e-12));partial=numeric&&q.direction&&state.direction!==q.direction;if(q.direction&&!state.direction){toast('Choose a direction too.');return;}ok=numeric&&(!q.direction||state.direction===q.direction);}
-      if(state.attempts===0)recordFirst(q,ok,state.hint);if(strict&&!ok){resetRun(host,key,options,session,q,'wrong answer');return;}if(ok&&state.attempts===0&&!state.hint)toast('SKILL PROVED ◆ '+(options.review?'Memory power charged!':'Knowledge power!'));state.clean=ok&&state.attempts===0&&!state.hint;state.attempts++;state.partial=partial;if(ok){state.done=true;if(!state.clean){data.stats[q.station].assisted++;}}
+      if(state.attempts===0)recordFirst(q,ok,state.hint);if(strict&&!ok){resetRun(host,key,options,session,q,'wrong answer');return;}if(ok&&state.attempts===0&&!state.hint)toast('SKILL PROVED ◆ '+(options.review?'Memory power charged!':'Knowledge power!'));state.clean=ok&&state.attempts===0&&!state.hint;state.attempts++;state.partial=partial;if(ok){if(state.attempts>1)window.LearningTracker?.event('correction',{topic:q.skill});state.done=true;if(!state.clean){data.stats[q.station].assisted++;}}
       save();stopTimer();mountSession(host,key,options);
     };
-    host.querySelector('#hint-button').onclick=()=>{cache();if(strict){resetRun(host,key,options,session,q,'hint requested');return;}state.hint=true;save();stopTimer();mountSession(host,key,options);};
+    host.querySelector('#hint-button').onclick=()=>{cache();if(!state.hint)window.LearningTracker?.event('hint',{topic:q.skill});if(strict){resetRun(host,key,options,session,q,'hint requested');return;}state.hint=true;save();stopTimer();mountSession(host,key,options);};
     const reveal=host.querySelector('#reveal-button');if(reveal)reveal.onclick=()=>{state.revealed=true;state.done=true;save();stopTimer();mountSession(host,key,options);};
     display();
     const end=host.querySelector('#end-check');if(end)end.onclick=()=>{stopTimer();session.finished=true;save();mountSession(host,key,options);};
