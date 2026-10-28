@@ -13,7 +13,7 @@
   const skills=id=>window.PhysicsQuestions.templates[id].map(fn=>fn().skill);
   const certified=(d,id)=>d.mastery?.version===2&&!!d.labs[id]&&!!d.mastery.topics[id]?.qualifiedAt;
   function sync(d,now=Date.now()){
-    window.PhysicsMastery.sync(d);
+    window.PhysicsRewards.ensure(d);window.PhysicsMastery.sync(d);
     d.arcade||={claims:{},reviews:{},avatar:'cyan',sound:false};d.arcade.claims||={};d.arcade.reviews||={};
     const newClaims=[];
     for(let id=1;id<=7;id++)if(certified(d,id)&&!d.arcade.claims[id]){
@@ -21,12 +21,12 @@
     }
     return newClaims;
   }
-  function xp(d){return Object.values(d.skills).filter(Boolean).length*25+Object.values(d.labs).filter(Boolean).length*60+Object.keys(d.arcade?.claims||{}).length*150+Object.values(d.arcade?.reviews||{}).reduce((n,r)=>n+(r.rewardedStage||r.stage)*100,0)+(d.arcade?.boss?300:0);}
+  function xp(d){return window.PhysicsRewards.total(d);}
   function rank(d){const points=xp(d),level=1+Math.floor(points/250),names=['Rookie Runner','Unit Scout','Scale Surfer','Lab Adventurer','Crystal Hunter','Physics Ranger','Quantum Knight','Realm Guardian'];return {points,level,name:names[Math.min(names.length-1,Math.floor((level-1)/2))],into:points%250};}
   const due=(d,now=Date.now())=>Object.entries(d.arcade?.reviews||{}).filter(([,r])=>r.stage<5&&r.due<=now).map(([id])=>+id);
   function review(d,id,passed,now=Date.now()){
-    const r=d.arcade?.reviews[id];if(!r||r.stage>=5||r.due>now)return false;
-    if(passed){r.stage++;r.last=now;r.due=r.stage===5?null:now+([2,4,7,16][r.stage-1])*DAY;return true;}
+    window.PhysicsRewards.ensure(d);const r=d.arcade?.reviews[id];if(!r||r.stage>=5||r.due>now)return false;
+    if(passed){r.stage++;window.PhysicsRewards.award(d,'recall:'+id+':'+r.stage,10,10);r.last=now;r.due=r.stage===5?null:now+([2,4,7,16][r.stage-1])*DAY;return true;}
     r.due=now+DAY;r.last=now;return false;
   }
   function sprite(color='cyan'){

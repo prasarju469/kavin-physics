@@ -17,11 +17,11 @@ Open http://localhost:8766. Use the same browser and address to retain progress.
 - Click the world map to focus it. Arrow keys or A/D move; Space jumps; E enters the nearest world. Touch controls and direct portal links are also available.
 - Choose a cyan, pink or lime astronaut suit on the home screen.
 - Each world follows Mission -> Learn + watch -> Understand + try -> Prove + capture.
-- Completing a new experiment earns 60 XP. Demonstrating a new skill independently earns 25 XP, once. Each captured world crystal earns 150 XP, once.
+- Experiments, skills and crystals record learning progress. New cash XP comes from completed assessments under the shared policy; old milestone XP is preserved.
 - Every 250 XP advances a player level. Replaying completed skills does not farm XP.
 - Capture a world crystal by completing its experiment and a flawless ten-question qualification run. Captures have a reward screen and appear on the trophy shelf.
 - Memory quests unlock after capture, at approximately days 1, 3, 7, 14 and 30. Passing with ten of ten independent answers earns a one-time 100 XP seal at each stage. A recall error restarts the ladder with the next attempt on the following day. Replays cannot advance the schedule early.
-- Seven captured crystals unlock the Glitch Engine: a 35-question boss challenge, one application per skill family. All 35 independent answers in one flawless run wins a one-time 300 XP reward.
+- Seven captured crystals unlock the Glitch Engine: a 35-question boss challenge, one application per skill family. The completed 35-question assessment follows the shared score curve, worth up to 350 XP; there is no extra boss cash bonus.
 - Guided video recap questions support learning and do not award mastery or XP.
 
 ## Included
@@ -81,3 +81,7 @@ Original exercises and diagrams are informed by the supplied chapter. The game d
 ## Strict mastery update
 
 See [CURRICULUM.md](CURRICULUM.md) for source mapping, ten-in-a-row qualification, one-error resets, 35/35 boss, 30-day retention and migration rules. Practice XP is separate from qualification and retained mastery. Run `node check-mastery.cjs` for the new gate and recall tests.
+
+## Shared XP policy — 28 October 2026
+
+1,000 XP = $2. Existing balances become a preserved opening credit. New completed assessments use the Editing score curve, scaled by question count; retries pay only improvements under a stable content ID. Hints and corrections do not deduct XP. Completion badges and guided training do not add cash bonuses. Cloud transactions merge XP ledgers so stale saves do not lower the balance. Arcade tokens remain separate. See XP-POLICY.md. Run `node check-xp.cjs` for reward and migration checks.

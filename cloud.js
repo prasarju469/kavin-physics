@@ -46,15 +46,15 @@ window.PhysicsCloud=(()=>{
   C.load=async local=>{
     if(!C.enabled)return local;
     const snap=await db.collection('users').doc(C.email).get({source:'server'}),remote=decode(snap.exists?snap.data():null);
-    if(remote&&(!local||(remote.updated||0)>=(local.updated||0))){notify('saved');return remote;}
-    return local;
+    if(remote&&(!local||(remote.updated||0)>=(local.updated||0))){if(local)window.PhysicsRewards.merge(remote,local);notify('saved');return remote;}
+    if(local&&remote)window.PhysicsRewards.merge(local,remote);return local;
   };
   async function write(){
     if(writing)return writing;
     if(!pending||!auth?.currentUser||auth.currentUser.uid!==account)return;
-    const snapshot=pending;pending=null;notify('saving');
-    writing=db.collection('users').doc(C.email).set({physics:{data:JSON.stringify(snapshot),updated:snapshot.updated||Date.now(),schema:1},name:C.name,role:C.role},{merge:true})
-      .then(()=>{notify(pending?'pending':'saved');})
+    const snapshot=pending,accountUid=account;pending=null;notify('saving');
+    writing=window.SharedRewards.saveSubject(db,db.collection('users').doc(C.email),'physics',snapshot,window.PhysicsRewards,{name:C.name,role:C.role})
+      .then(()=>{if(auth.currentUser?.uid!==accountUid)return;if(pending)window.PhysicsRewards.merge(pending,snapshot);window.dispatchEvent(new CustomEvent('physics-rewards-merged',{detail:snapshot}));notify(pending?'pending':'saved');})
       .catch(e=>{if(!pending)pending=snapshot;notify('error',codeMessage(e));throw e;})
       .finally(()=>{writing=null;});
     return writing;

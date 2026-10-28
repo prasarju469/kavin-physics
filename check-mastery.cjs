@@ -1,6 +1,6 @@
 const fs=require('fs'),vm=require('vm'),assert=require('assert/strict');
 const ctx={window:{},Math,Number,Date};vm.createContext(ctx);
-for(const f of ['questions.js','question-depth.js','widgets.js','mastery.js','game.js'])vm.runInContext(fs.readFileSync(__dirname+'/'+f,'utf8'),ctx);
+for(const f of ['questions.js','question-depth.js','widgets.js','mastery.js','shared-rewards.js','reward-policy.js','game.js'])vm.runInContext(fs.readFileSync(__dirname+'/'+f,'utf8'),ctx);
 const {PhysicsQuestions:Q,PhysicsMastery:M,PhysicsGame:G}=ctx.window,now=1800000000000,D=86400000;
 const d={labs:{1:true},skills:{'1:magnitude':true},sessions:{old:{}},arcade:{claims:{1:now},reviews:{1:{stage:3}},boss:true},history:[]};
 G.sync(d,now);assert.equal(G.certified(d,1),false);assert.equal(d.mastery.legacy.arcade.boss,true);assert.equal(Object.keys(d.sessions).length,0);assert.equal(d.skills['1:magnitude'],true);

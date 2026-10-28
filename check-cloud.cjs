@@ -12,9 +12,10 @@ function setup({role='student',denied=false,records={},fail=false}={}){
     onSnapshot(cb){if(role!=='teacher')throw error();cb({docs:Object.entries(records).map(([id,d])=>({id,data:()=>d}))});return ()=>{};},
     get:async()=>({docs:Object.entries(records).map(([id,d])=>({id,data:()=>d}))})
   };}};
+  db.runTransaction=async fn=>{const pending=[];const result=await fn({get:ref=>ref.get(),set:(ref,patch,opts)=>pending.push(ref.set(patch,opts))});await Promise.all(pending);return result;};
   const nodes=new Map();const node=id=>{if(!nodes.has(id))nodes.set(id,{innerHTML:'',textContent:'',className:'',onclick:null,appendChild(){}});return nodes.get(id);};
   const app={auth:()=>auth,firestore:()=>db};const firebase={apps:[],initializeApp:()=>app,app:()=>app,auth:()=>auth,firestore:()=>db};
-  const ctx={window:{PHYSICS_CONFIG:{firebase:{projectId:'test'}},KQ_CONFIG:{firebase:{projectId:'test'}},dispatchEvent(){},addEventListener(){}},document:{body:{classList:{add(){},remove(){}}},getElementById:node,querySelector:node,createElement:()=>({}),head:{appendChild:s=>queueMicrotask(()=>s.onload())},addEventListener(){}},firebase,location:{reload(){reloads++;}},setTimeout,clearTimeout,Event,console};
+  const ctx={window:{SharedRewards:require('./shared-rewards.js'),PhysicsRewards:require('./reward-policy.js'),MathsRewards:require('../kavin-quadratics/reward-policy.js'),PHYSICS_CONFIG:{firebase:{projectId:'test'}},KQ_CONFIG:{firebase:{projectId:'test'}},dispatchEvent(){},addEventListener(){}},document:{body:{classList:{add(){},remove(){}}},getElementById:node,querySelector:node,createElement:()=>({}),head:{appendChild:s=>queueMicrotask(()=>s.onload())},addEventListener(){}},firebase,location:{reload(){reloads++;}},setTimeout,clearTimeout,Event,CustomEvent:class{constructor(type,options){this.type=type;this.detail=options.detail}},console};
   vm.createContext(ctx);vm.runInContext(fs.readFileSync(__dirname+'/cloud.js','utf8'),ctx);
   return {ctx,C:ctx.window.PhysicsCloud,auth,records,writes,setFail:v=>fail=v,get reloads(){return reloads;}};
 }
