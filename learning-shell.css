@@ -58,7 +58,7 @@ body[data-learning-subject="physics"] .result .score,body[data-learning-subject=
 body[data-learning-subject="maths"] :is(.recipe-steps li,details.recipe,.eline,.widget,.opt,.fields.grid .field,.mockq,.levelbar,.mockbar,.timer){background:#fff9e9;color:#27213f;border-color:#d3c8ab}body[data-learning-subject="maths"] :is(.levelbar,.mockbar){border-bottom:2px dashed #d3c8ab;box-shadow:none;backdrop-filter:none}body[data-learning-subject="maths"] .opt.sel{background:#e4f3c4;color:#27213f}body[data-learning-subject="maths"] :is(.bar,.track,.dots i){background:#e4ddca}body[data-learning-subject="maths"] :is(.widget>svg,.rgsvg){--ink:#fff9e9;--cyan:#3be8ff;--lime:#b6ff3b;color:#fff9e9}
 body[data-learning-subject="physics"] .account-bar :is(strong,#cloud-status){color:#304dc3}body[data-learning-subject="physics"] .account-bar #cloud-status.sync-error{color:#b33726}
 body[data-learning-subject="physics"] .lesson-panel #lesson-body>p{color:#645d75}body[data-learning-subject="physics"] .lesson-panel #lesson-body :is(h1,h2,h3,li){color:#27213f;text-shadow:none}
-.learning-header .account-nav:empty{display:none}
+.learning-header .account-nav:not(:has(*)){display:none}
 @media(max-width:700px){.learning-header-row{position:relative}.learning-header-row>.brand{font-size:22px!important;margin-right:0}.learning-header-row:has(.learning-account-actions:not(:empty))>.brand{padding-right:100px}.learning-header-row>.learning-header-metrics,.learning-header-row>.header-account{order:3;flex-basis:100%}.learning-header-row>#practiceSet{order:4;min-height:30px}.learning-header-row>.learning-account-actions{position:absolute;right:0;top:14px;margin:0}.learning-account-actions button,.learning-account-actions a{font-size:11px!important;padding:8px 10px!important}}
 
 #subjectArcade #finishBreak{margin-top:0}body[data-learning-subject] .learning-tabs>#gamesTab{flex-shrink:0}
@@ -95,3 +95,9 @@ body[data-learning-subject] .learning-header .learning-tabs>:is(a,button)[aria-d
 body[data-learning-subject] .learning-header .learning-tab-strip>.tab-scroll{height:36px;min-height:36px;width:30px;padding:0;flex:0 0 30px;border:2px solid #27213f;border-radius:7px;box-shadow:2px 2px #27213f;font:900 24px/1 LearningNunito,sans-serif;background:#fff9e9;color:#27213f}
 body[data-learning-subject] .learning-header .learning-tab-strip>.tab-scroll:disabled{opacity:.35;box-shadow:none}
 @media(max-width:700px){body[data-learning-subject] .learning-header .learning-tab-strip{margin-top:14px;gap:8px}}
+
+/* One content offset below the tab strip, with no subject-specific account row. */
+body[data-learning-subject]:not(.auth-required):not(.auth-locked):not(.locked)>main{padding-top:16px!important;margin-top:0}
+body[data-learning-subject]:not(.auth-required):not(.auth-locked):not(.locked)>main>:first-child{margin-top:0}
+body[data-learning-subject="coding"]:not(.auth-required) main>.lede{display:none}
+body[data-learning-subject="english"]:not(.auth-required) main>.intro{padding-top:0}

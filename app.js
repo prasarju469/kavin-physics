@@ -152,8 +152,7 @@
   }
   function setupAccountNav(){
     if(!C.enabled)return;
-    const bar=document.createElement('div');bar.className='account-bar';bar.innerHTML=`<span><strong>Account</strong> ${escape(C.name)} <small>${escape(C.email)}</small></span><div><span id="cloud-status" role="status" aria-live="polite"></span><button class="btn small" id="retry-cloud">Sync now</button><button class="btn small" id="sign-out">Sign out</button></div>`;
-    $('.topbar').after(bar);$('#sign-out').onclick=()=>C.signOut();$('#retry-cloud').onclick=()=>C.flush().catch(()=>toast('Progress is safe on this device. Check the connection and retry.'));cloudStatus();window.addEventListener('physics-cloud-status',cloudStatus);
+    const signout=document.createElement('button');signout.id='sign-out';signout.className='btn small';signout.textContent='Sign out';signout.onclick=()=>C.signOut();$('.topbar').appendChild(signout);
   }
   const count=n=>Number.isFinite(Number(n))?Math.max(0,Number(n)):0;
   const reportDate=value=>{const date=new Date(Number(value));return value&&Number.isFinite(date.getTime())?date.toLocaleString('en-SG',{dateStyle:'medium',timeStyle:'short'}):'No valid save time';};
