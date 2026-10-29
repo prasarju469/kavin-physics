@@ -32,7 +32,7 @@ window.PhysicsCloud=(()=>{
     const email=norm(user.email);let role;
     try{await db.collection('users').limit(1).get({source:'server'});role='teacher';}
     catch(e){if(e.code!=='permission-denied')throw e;await db.collection('users').doc(email).get({source:'server'});role='student';}
-    C.email=email;C.name=user.displayName||email;C.role=role;account=user.uid;window.LearningTracker?.start({subject:'physics',email,auth,db,role});
+    await window.PlayerProfile?.connect({auth,db,user,role});C.email=email;C.name=window.PlayerProfile?.name()||user.displayName||email;C.role=role;account=user.uid;window.LearningTracker?.start({subject:'physics',email,auth,db,role});
   }
   function login(){
     return new Promise(resolve=>{
