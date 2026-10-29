@@ -16,7 +16,10 @@
   const move=direction=>tabs.scrollBy({left:direction*Math.max(160,tabs.clientWidth*.75),behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
   left.onclick=()=>move(-1);right.onclick=()=>move(1);tabs.addEventListener('scroll',updateScroll,{passive:true});
   tabs.addEventListener('keydown',event=>{if(event.target!==tabs)return;if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();move(event.key==='ArrowLeft'?-1:1);}else if(event.key==='Home'||event.key==='End'){event.preventDefault();tabs.scrollTo({left:event.key==='Home'?0:tabs.scrollWidth,behavior:'instant'});}});
-  new ResizeObserver(updateScroll).observe(tabs);new MutationObserver(updateScroll).observe(tabs,{childList:true});updateScroll();
+  const tabSizes=new ResizeObserver(updateScroll);
+  function watchTabs(){tabSizes.disconnect();tabSizes.observe(tabs);for(const tab of tabs.children)tabSizes.observe(tab);updateScroll();}
+  new MutationObserver(watchTabs).observe(tabs,{childList:true});watchTabs();
+  document.fonts?.ready.then(updateScroll);
  }
  const hud=document.querySelector('#hud');if(hud&&hud.closest('nav'))row.appendChild(hud);
  let metrics=row.querySelector('.header-account');
