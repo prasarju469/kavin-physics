@@ -1,9 +1,10 @@
 /* Display names are separate from account IDs, subject saves and reward ledgers. */
 (function(root){
  const clean=value=>String(value||'').normalize('NFKC').trim().replace(/\s+/g,' ');
+ const resolveName=(email,value)=>String(email||'').trim().toLowerCase()==='kavingames5@gmail.com'?'Kavin':value;
  const valid=value=>{const n=clean(value);return n.length>=2&&n.length<=24&&!/[<>\u0000-\u001f\u007f]/.test(n);};
  let context=null,dialog=null,button=null,off=null,offAuth=null;
- function label(){if(button)button.textContent=context?.name?context.name:'Your name';}
+ function label(){if(button)button.textContent=context?resolveName(context.email,context.name||'Your name'):'Your name';}
  function editor(required=false){
   if(dialog)return;const ctx=context;if(!ctx)return;
   dialog=document.createElement('dialog');dialog.className='player-profile-dialog';dialog.setAttribute('aria-labelledby','player-profile-heading');
@@ -13,18 +14,18 @@
   function close(){node.close();node.remove();if(dialog===node)dialog=null;}
   node.addEventListener('cancel',e=>{if(required)e.preventDefault();else close();});node.querySelector('[data-cancel]').onclick=close;
   node.querySelector('form').onsubmit=async e=>{e.preventDefault();const name=clean(input.value);if(!valid(name)){error.textContent='Use 2–24 characters, without angle brackets or control characters.';return;}if(ctx.auth.currentUser?.uid!==ctx.uid){error.textContent='Your account changed. Reload and sign in again.';return;}const save=node.querySelector('[type=submit]');save.disabled=true;
-   try{await ctx.ref.set({learningProfile:{displayName:name,version:1}},{merge:true});if(context!==ctx||ctx.auth.currentUser?.uid!==ctx.uid){close();return;}ctx.name=name;label();root.dispatchEvent(new CustomEvent('player-name-changed',{detail:{name}}));close();}catch{error.textContent='Could not save your name. Check the connection and try again.';save.disabled=false;}
+   try{await ctx.ref.set({learningProfile:{displayName:name,version:1}},{merge:true});if(context!==ctx||ctx.auth.currentUser?.uid!==ctx.uid){close();return;}ctx.name=name;label();root.dispatchEvent(new CustomEvent('player-name-changed',{detail:{name:resolveName(ctx.email,name)}}));close();}catch{error.textContent='Could not save your name. Check the connection and try again.';save.disabled=false;}
   };node.showModal();input.focus();
  }
  async function connect({auth,db,user,role}){
   if(!user?.email)return;off?.();offAuth?.();off=null;offAuth=null;dialog?.close();dialog?.remove();dialog=null;button?.remove();button=null;
   const ref=db.collection('users').doc(user.email.trim().toLowerCase()),snap=await ref.get({source:'server'});if(auth.currentUser?.uid!==user.uid)return;
-  const name=clean(snap.exists?snap.data().learningProfile?.displayName:'');context={auth,db,ref,uid:user.uid,name:valid(name)?name:''};
+  const name=clean(snap.exists?snap.data().learningProfile?.displayName:'');context={auth,db,ref,uid:user.uid,email:user.email.trim().toLowerCase(),name:valid(name)?name:''};
   const header=document.querySelector('.learning-header-row')||document.querySelector('body>header');if(header){button=document.createElement('button');button.type='button';button.className='btn player-profile-button';button.title='Change your display name';button.setAttribute('aria-label','Change your display name');button.onclick=()=>editor();const actions=header.querySelector('.learning-account-actions');if(actions)actions.prepend(button);else header.appendChild(button);Object.assign(button.style,{maxWidth:'160px',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'});label();}
   off=ref.onSnapshot?.(s=>{if(context?.uid!==user.uid)return;const n=clean(s.data()?.learningProfile?.displayName);if(valid(n)){context.name=n;label();}},()=>{});
   offAuth=auth.onAuthStateChanged?.(u=>{if(u?.uid===user.uid)return;off?.();off=null;context=null;dialog?.close();dialog?.remove();dialog=null;button?.remove();button=null;});
   if(context&&!context.name&&role==='student')editor(true);
-  return context?.name||'';
+  return context?resolveName(context.email,context.name):'';
  }
- root.PlayerProfile={connect,clean,valid,name:()=>context?.name||''};
+ root.PlayerProfile={connect,clean,valid,resolveName,name:()=>context?resolveName(context.email,context.name):''};
 })(window);

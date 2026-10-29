@@ -2,12 +2,12 @@
 (function(root){
 const V={readOnly:false,current:null};let uid='';
 const clone=x=>JSON.parse(JSON.stringify(x));
-function name(record){return record.learningProfile?.displayName||record.name||'Learner';}
+function name(record,email=''){const value=record.learningProfile?.displayName||record.name||'Learner';return root.PlayerProfile?.resolveName?.(email,value)??value;}
 async function select({auth,db,user}){
  if(!user?.emailVerified)throw Error('Verified account required');let list;
  try{list=await db.collection('users').get({source:'server'});}catch(e){if(e.code!=='permission-denied')throw e;clear();return {parent:false};}
  if(auth.currentUser?.uid!==user.uid)throw Error('Account changed');
- const candidates=list.docs.filter(d=>d.id!==user.email.toLowerCase()&&d.id.includes('@')&&d.data().role!=='teacher').map(d=>({id:d.id,name:name(d.data()),record:clone(d.data())}));
+ const candidates=list.docs.filter(d=>d.id!==user.email.toLowerCase()&&d.id.includes('@')&&d.data().role!=='teacher').map(d=>({id:d.id,name:name(d.data(),d.id),record:clone(d.data())}));
  if(!candidates.length)throw Error('No learner record available');
  let saved;try{saved=sessionStorage.getItem('learner-view:'+user.uid);}catch{}
  const selected=candidates.find(d=>d.id===saved)||candidates[0];uid=user.uid;V.readOnly=true;V.current=selected;
