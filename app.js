@@ -143,7 +143,7 @@
     const m=path.match(/^\/station\/([1-7])(?:\/([0-3]))?$/);
     const training=path.match(/^\/practice\/([1-7])$/);
     if(training)practice(+training[1]);else if(m)station(+m[1],m[2]===undefined?0:+m[2]);else if(path==='/')home();else if(path==='/teacher'){teacherPreview=false;teacherHome();}else if(path==='/student'){teacherPreview=C.role==='teacher';home();}else if(path==='/memory')memory();else if(path==='/boss')boss();else if(path==='/videos')videos();else if(path==='/rules')rules();else if(path==='/wake')wake();else if(path==='/progress')progress();else notFound();
-    document.title=m?`${G.worlds[+m[1]-1].name} · Quantum Quest`:'Quantum Quest · Kavin’s Physics Adventure';window.scrollTo(0,0);root.focus({preventScroll:true});hud();
+    document.title='Physics';window.scrollTo(0,0);root.focus({preventScroll:true});hud();
   }
   function cloudStatus(){
     const status=$('#cloud-status');if(!status)return;
