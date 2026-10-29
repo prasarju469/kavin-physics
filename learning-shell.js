@@ -30,3 +30,19 @@
  function active(){if(!tabs||tabs.id==='tabs'||tabs.classList.contains('practice-tabs'))return;const hash=location.hash||'#/';for(const link of tabs.querySelectorAll('a[href^="#/"]')){const match=link.getAttribute('href')===hash;link.classList.toggle('active',match);if(match)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current');}}
  active();window.addEventListener('hashchange',active);
 })();
+
+/* Headings use sentence case; notation, paper text and assessment data are untouched. */
+(function(){
+ const area=document.querySelector('main');if(!area)return;
+ function sentenceHeadings(){
+  area.querySelectorAll('h1,h2,h3,h4').forEach(heading=>{
+   if(heading.closest('.text-paper,.book-paper,.paper-sheet,pre,code,.katex'))return;
+   const full=heading.textContent.trim();if(!/[A-Z]{2}/.test(full)||full!==full.toUpperCase())return;
+   let first=true;
+   const walker=document.createTreeWalker(heading,NodeFilter.SHOW_TEXT);
+   const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+   for(const node of nodes){let value=node.nodeValue.toLowerCase().replace(/\b(xp|si|ai|sql|html|css|stem)\b/g,x=>x.toUpperCase()).replace(/\bkavin\b/g,'Kavin');if(first&&/[a-z]/i.test(value)){value=value.replace(/[a-z]/i,x=>x.toUpperCase());first=false;}if(value!==node.nodeValue)node.nodeValue=value;if(/[.!?]\s*$/.test(value))first=true;}
+  });
+ }
+ sentenceHeadings();new MutationObserver(sentenceHeadings).observe(area,{childList:true,subtree:true});
+})();

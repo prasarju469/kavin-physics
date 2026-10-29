@@ -1,0 +1,25 @@
+/* Editing's compact learning interface is the common presentation scale.
+   Paper passages, code, mathematical notation, instruments and game art keep their fonts. */
+:root{--learn-title:21px;--learn-section:21px;--learn-subtitle:15px;--learn-body:15px;--learn-small:12px;--learn-leading:1.65;--learn-pad:12px;--learn-radius:12px;--learn-shadow:4px 4px #27213f}
+body[data-learning-subject] main :is(h1,h2,h3):not(:where(.text-paper *,.book-paper *)){font-family:LearningLilita,sans-serif;font-weight:400;font-style:normal;text-shadow:none;letter-spacing:0;font-size:var(--learn-section);line-height:1.3}
+body[data-learning-subject] main :is(h1,.card>h2,#worldTitle){font-size:var(--learn-title);line-height:1.3;margin-top:0;margin-bottom:12px}
+body[data-learning-subject] main h4:not(:where(.text-paper *,.book-paper *)){font:900 var(--learn-subtitle)/1.4 LearningNunito,sans-serif;margin:16px 0 8px}
+body[data-learning-subject] main :is(.intro,.hero,.arcade-intro,.welcome-card,.auth-panel) h1{font-size:36px;line-height:1.15}
+body[data-learning-subject] main :is(p,li,label):not(:where(.text-paper *,.book-paper *,.paper-sheet *,.formula *,.katex *,.instrument *,.game-shelf *,.arcade-play *)){font-family:LearningNunito,system-ui,sans-serif;font-size:var(--learn-body);line-height:var(--learn-leading)}
+body[data-learning-subject] main :is(.eyebrow,.howto-lead,.caption,.step-help,.mini-progress,.quiz-status,.question-count,.paper-tools p,.paper-state,.theme,.page-title>p.muted){font-family:LearningNunito,sans-serif;font-size:var(--learn-small);line-height:1.5}
+body[data-learning-subject] main :is(.eyebrow,.arcade-kicker){font-weight:900;letter-spacing:.06em}
+body[data-learning-subject] main :is(.panel,.panel-box,.block,.qcard,.recipecard,.lesson-sidebar,.lesson-panel,#arcade,#studio,.card){border-radius:var(--learn-radius);padding:var(--learn-pad);border:2px solid var(--ink);box-shadow:var(--learn-shadow)}
+body[data-learning-subject] main :is(.panel,.panel-box,.block,.qcard,.recipecard,.lesson-sidebar,.lesson-panel,.card)>:first-child{margin-top:0}
+body[data-learning-subject] main :is(.panel,.panel-box,.block,.qcard,.recipecard,.lesson-sidebar,.lesson-panel,.card)>:last-child{margin-bottom:0}
+body[data-learning-subject] main :is(.callout,.worked,.feedback,.done-when,.note){padding:12px;border-radius:8px;font-size:var(--learn-body);line-height:var(--learn-leading)}
+body[data-learning-subject] main :is(.lesson-layout,.rule-grid,.two-col,.grid){gap:16px}
+body[data-learning-subject] main .howto-step p{font-size:var(--learn-body);line-height:var(--learn-leading)}
+body[data-learning-subject] main .lesson-copy{max-width:78ch}
+/* Equal strength to the subject theme; keep these rules after it on every site. */
+body[data-learning-subject="physics"] main :is(.lesson-panel,.page-title,.boss-intro) h1{font-size:var(--learn-title);line-height:1.3}
+body[data-learning-subject="physics"] main :is(.panel,.lesson-panel,.lesson-sidebar){padding:var(--learn-pad);border-radius:var(--learn-radius);box-shadow:var(--learn-shadow)}
+body[data-learning-subject="physics"] main :is(.lesson-panel,.lesson-copy,.panel,.video-copy) :is(p,li){font-size:var(--learn-body);line-height:var(--learn-leading)}
+body[data-learning-subject="physics"] main :is(.lesson-sidebar h2,.video-copy h3,.quest-tile h3){font-family:LearningLilita,sans-serif;font-size:var(--learn-section);line-height:1.3}
+body[data-learning-subject="coding"] main :is(.panel-box,.card){padding:var(--learn-pad);border-radius:var(--learn-radius);box-shadow:var(--learn-shadow)}
+body[data-learning-subject="maths"] main :is(h1,h3){font-size:var(--learn-title);line-height:1.3}
+@media(max-width:700px){body[data-learning-subject] main :is(.intro,.hero,.arcade-intro,.welcome-card,.auth-panel) h1{font-size:30px}body[data-learning-subject="physics"] main .lesson-panel{padding:var(--learn-pad)}}
