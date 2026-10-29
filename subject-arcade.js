@@ -16,7 +16,7 @@ const E=window.SubjectGameTokens,G=window.TowerGames,$=s=>document.querySelector
 let selected='maze',engine,playing=false,starting=false,shown=false,lastMono=0,carry=0,timer=null,round=1,lastSave=0,visualAt=0,busy=false,releaseLock=null,testMode=false,testState={};
 let generation=0;
 const account=()=>bridge.isReady()?bridge.identity():'';
-const canTest=()=>bridge.isReady()&&bridge.isTeacher();
+const canTest=()=>false;
 const holder=()=>testMode?testState:bridge.getState(),key=(test=testMode,identity=account())=>BASE+':'+identity+(test?'-test':'');
 function load(test=testMode){const h=test?testState:bridge.getState();if(!h)return;E.wallet(h,bridge.subject);let a;try{a=JSON.parse(localStorage.getItem(key(test)));}catch{}if(a?.subject===bridge.subject)E.merge(h,{gameTokens:a});return E.wallet(h);}
 function store(test=testMode,saveApp=false){const h=test?testState:bridge.getState(),a=E.wallet(h,bridge.subject);a.updated=Date.now();localStorage.setItem(key(test),JSON.stringify(a));if(!test&&saveApp)save();}

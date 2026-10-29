@@ -21,7 +21,7 @@
   }
   function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
   function home(){
-    if(C.role==='teacher'&&!teacherPreview)return teacherHome();
+
     const next=stations.find(s=>!complete(s.id))||stations[0],r=G.rank(data),due=G.due(data),claimCount=completed();
     const started=Object.keys(data.steps).length||Object.keys(data.sessions).length;
     root.innerHTML=`<section class="arcade-intro"><div><div class="arcade-kicker"><span class="live-pixel"></span> PLAYER 01: KAVIN <span>CHAPTER 1</span></div><h1>PHYSICS.<br><span>POWERED UP.</span></h1><p>The Glitch Engine scrambled reality. Recover seven knowledge crystals, outsmart the boss, and put the universe back together.</p><div class="hero-actions"><a class="btn primary" href="#/station/${started?data.lastStation:1}">${started?'CONTINUE QUEST':'PRESS START'} <span>▶</span></a><a class="btn" href="#/station/5/2">TRY A CHALLENGE ⚡</a></div></div><div class="player-card"><div class="player-card-top">PLAYER PROFILE <span>ONLINE ●</span></div><div class="player-card-body"><div class="profile-sprite">${G.sprite(data.arcade.avatar)}</div><div><span class="eyebrow">${r.name}</span><strong>KAVIN</strong><div class="profile-level">LEVEL ${r.level}</div></div></div><div class="profile-xp"><span>${r.into} / 250 XP TO NEXT LEVEL</span><div class="progress-track"><i style="width:${r.into/250*100}%"></i></div></div><div class="skin-picker" aria-label="Choose your suit colour">${['cyan','pink','lime'].map(c=>`<button data-skin="${c}" class="skin ${data.arcade.avatar===c?'selected':''}" aria-label="${c} suit" aria-pressed="${data.arcade.avatar===c}" style="--suit:${c==='cyan'?'#50e9ff':c==='pink'?'#ff82d4':'#c7ff63'}"></button>`).join('')}<span>PICK YOUR SUIT</span></div></div></section>
@@ -142,7 +142,7 @@
     document.querySelectorAll('[data-nav]').forEach(a=>a.classList.toggle('active',a.dataset.nav===(path==='/'?'home':path.split('/')[1])));
     const m=path.match(/^\/station\/([1-7])(?:\/([0-3]))?$/);
     const training=path.match(/^\/practice\/([1-7])$/);
-    if(training)practice(+training[1]);else if(m)station(+m[1],m[2]===undefined?0:+m[2]);else if(path==='/')home();else if(path==='/teacher'){teacherPreview=false;teacherHome();}else if(path==='/student'){teacherPreview=C.role==='teacher';home();}else if(path==='/memory')memory();else if(path==='/boss')boss();else if(path==='/videos')videos();else if(path==='/rules')rules();else if(path==='/wake')wake();else if(path==='/progress')progress();else notFound();
+    if(training)practice(+training[1]);else if(m)station(+m[1],m[2]===undefined?0:+m[2]);else if(path==='/')home();else if(path==='/teacher'||path==='/student'){home();}else if(path==='/memory')memory();else if(path==='/boss')boss();else if(path==='/videos')videos();else if(path==='/rules')rules();else if(path==='/wake')wake();else if(path==='/progress')progress();else notFound();
     document.title='Physics';window.scrollTo(0,0);root.focus({preventScroll:true});hud();
   }
   function cloudStatus(){
@@ -152,7 +152,7 @@
   }
   function setupAccountNav(){
     if(!C.enabled)return;
-    const bar=document.createElement('div');bar.className='account-bar';bar.innerHTML=`<span><strong>${C.role==='teacher'?'TEACHER':'PLAYER'}</strong> ${escape(C.name)} <small>${escape(C.email)}</small></span><div><span id="cloud-status" role="status" aria-live="polite"></span><button class="btn small" id="retry-cloud">Sync now</button>${C.role==='teacher'?'<a class="btn small" href="#/teacher">Teacher dashboard</a><a class="btn small" href="#/student">Preview game</a>':''}<button class="btn small" id="sign-out">Sign out</button></div>`;
+    const bar=document.createElement('div');bar.className='account-bar';bar.innerHTML=`<span><strong>Account</strong> ${escape(C.name)} <small>${escape(C.email)}</small></span><div><span id="cloud-status" role="status" aria-live="polite"></span><button class="btn small" id="retry-cloud">Sync now</button><button class="btn small" id="sign-out">Sign out</button></div>`;
     $('.topbar').after(bar);$('#sign-out').onclick=()=>C.signOut();$('#retry-cloud').onclick=()=>C.flush().catch(()=>toast('Progress is safe on this device. Check the connection and retry.'));cloudStatus();window.addEventListener('physics-cloud-status',cloudStatus);
   }
   const count=n=>Number.isFinite(Number(n))?Math.max(0,Number(n)):0;
