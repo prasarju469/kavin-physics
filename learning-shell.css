@@ -75,3 +75,13 @@ body[data-learning-subject] .learning-header :is(.xp-card,.completion-card,.toke
 
 /* Plain, consistent subject names in every navbar. */
 body[data-learning-subject] .learning-header .brand{font:400 24px/1.1 LearningLilita,sans-serif;letter-spacing:0;text-transform:none;transform:none;padding:0;border:0;border-radius:0;background:transparent}
+
+/* Navbar order: subject, tokens, XP, collection, sign out. Completion stays in progress views. */
+body[data-learning-subject] .learning-header .completion-card{display:none!important}
+body[data-learning-subject] .learning-header-metrics,body[data-learning-subject] .learning-header .header-account{gap:12px}
+body[data-learning-subject] .learning-header #hud{display:contents!important}
+body[data-learning-subject] .learning-header .learning-collection{height:40px;min-height:40px;max-width:150px;min-width:100px;margin:0;padding:0 34px 0 12px;appearance:none;background:#fff9e9 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m4 6 4 4 4-4' fill='none' stroke='%2327213f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 12px center/12px;border:2px solid #27213f;border-radius:9px;box-shadow:3px 3px #27213f;color:#27213f;font:900 12px/1.2 LearningNunito,sans-serif;cursor:pointer;transform:none}
+body[data-learning-subject] .learning-header .learning-account-actions{gap:12px}
+body[data-learning-subject] .learning-header .learning-account-actions :is(button,a){height:40px;display:inline-flex;align-items:center;justify-content:center}
+body.auth-required .learning-collection,body.auth-locked .learning-collection,body.locked .learning-collection{display:none!important}
+@media(max-width:700px){body[data-learning-subject] .learning-header-row>.brand{flex-basis:auto!important;padding-right:0!important;margin-right:auto}body[data-learning-subject] .learning-header .learning-account-actions{position:static!important;margin-left:auto;gap:8px}body[data-learning-subject] .learning-header .learning-collection{min-width:94px;padding-left:9px;font-size:11px}body[data-learning-subject] .learning-header-row>.learning-header-metrics,body[data-learning-subject] .learning-header-row>.header-account{order:3;flex-basis:100%;gap:12px}}

@@ -22,8 +22,14 @@
  let metrics=row.querySelector('.header-account');
  if(!metrics){metrics=document.createElement('div');metrics.className='learning-header-metrics';row.appendChild(metrics);for(const n of [...row.children])if(n.matches('.xp-card,.completion-card,.token-card,.subject-token-card,#hud'))metrics.appendChild(n);}
  const actions=document.createElement('div');actions.className='learning-account-actions';row.appendChild(actions);
+ // A selector describes the current curriculum, not a new progress namespace.
+ // Editing keeps its existing selector and change handler; the others have one collection today.
+ const subject=document.body.dataset.learningSubject;
+ let collection=header.querySelector('#practiceSet');
+ if(!collection){collection=document.createElement('select');collection.id='learningCollection';collection.setAttribute('aria-label',['maths','physics'].includes(subject)?'Chapter':'Set');const option=document.createElement('option');option.value='1';option.textContent=['maths','physics'].includes(subject)?'Chapter 1':'Set 1';collection.appendChild(option);}
+ collection.classList.add('learning-collection');actions.appendChild(collection);
  function arrange(){
-  const token=header.querySelector('.subject-token-card');if(token&&token.parentElement!==metrics)metrics.appendChild(token);
+  const token=header.querySelector('.subject-token-card,.token-card');if(token&&(token.parentElement!==metrics||metrics.firstElementChild!==token))metrics.prepend(token);
   for(const id of ['signOut','signout','sign-out']){const n=document.getElementById(id);if(n&&n.parentElement!==actions)actions.appendChild(n);}
  }
  arrange();new MutationObserver(arrange).observe(document.body,{childList:true,subtree:true});
