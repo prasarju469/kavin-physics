@@ -13,7 +13,7 @@ This is a syllabus-aligned expansion, NOT a statistical claim about frequently e
 
 ## Coverage and extensions
 
-| World | Foundation | Application / misconception extension | Source relationship |
+| Topic | Foundation | Application / misconception extension | Source relationship |
 |---|---|---|---|
 | Units | Magnitude, SI base quantities, quantity vs unit, derived units | Derive acceleration, force and pressure units from supplied formulae; special names do not imply base units | 1(a,b), mathematical application; luminous intensity is SI enrichment beyond the six base quantities listed |
 | Prefixes | Conversion and standard form | Full n, µ, m, c, d, k, M, G, T prefix set; atom/paper/human/classroom/Earth scale anchors; changed unit changes numerical magnitude | 1(c,d) |
@@ -27,12 +27,12 @@ This is a syllabus-aligned expansion, NOT a statistical claim about frequently e
 
 ## Qualification and retention
 
-- Learning: notes, videos, experiments. Practice Arcade permits hints and retries; lifetime practice skills never certify a topic.
+- Learning: notes, worked examples, guided steps, optional videos and experiments. Practice permits hints and retries; lifetime practice skills never certify a topic.
 - Each topic qualification run: ten questions, one foundation and one application per family, shuffled. Every answer must be correct first time with no hint. One wrong answer or hint ends the run immediately, displays the correction and persists the reset across refresh. The learner explicitly starts a newly generated run from question one.
-- A completed flawless run qualifies the topic. Its experiment is also required for a crystal. Qualification is kept separate from retained mastery.
+- A completed flawless run qualifies the topic. Its completed guided steps (or preserved legacy experiment completion) are also required to unlock the next topic. Qualification is kept separate from retained mastery.
 - Recall: ten-question flawless runs, scheduled at approximately days 1, 3, 7, 14 and 30 when completed on time. Intervals between successful recalls are 2, 4, 7 and 16 days; late completion shifts the later schedule. Early practice cannot earn seals.
 - A due recall error restarts the retention ladder and schedules another attempt for the following day. Historical qualification, learning and error records remain. Seal XP uses the highest awarded stage so recovery cannot farm XP.
-- Boss: one application from each of all 35 skill families, shuffled, 35/35 without hints. One error ends the entire boss run. No compulsory speed pressure.
+- Chapter check: one application from each of all 35 skill families, shuffled, 35/35 without hints. One error ends the entire chapter-check run. No compulsory speed pressure.
 - Teacher evidence: topic status, best qualification streak, resets, recall stage, lapses, next due time, first-try statistics, recurring missed skills and recent reset runs.
 
 ## Existing account saves

@@ -1,0 +1,9 @@
+/* A topic course, using the same compact cards and controls as Editing. */
+body[data-learning-subject="physics"] main{max-width:1240px}
+.chapter-overview{margin-bottom:20px}.chapter-overview p{max-width:85ch}
+.course-topics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-bottom:20px}.course-topics .panel{margin:0;display:flex;flex-direction:column;align-items:start}.course-topics .panel .btn{margin-top:auto}
+.topic-heading{margin-bottom:16px}.topic-steps{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.topic-steps .btn{min-height:40px}
+#lesson-body>.panel{margin-bottom:16px}#lesson-body .lesson-copy{max-width:none}#lesson-body .lesson-copy>p,#lesson-body .lesson-copy>ol,#lesson-body .lesson-copy>ul{max-width:85ch}
+.guided-form{display:grid;gap:14px;margin:20px 0}.guided-field{display:flex;flex-direction:column;gap:6px}.guided-field input{max-width:340px;min-height:44px;padding:9px 12px}.guided-field input[aria-invalid="true"]{border-color:#b33726}.guided-form .btn{justify-self:start}.guided-feedback{padding:12px;background:#eef0ff;border-radius:8px}.guided-feedback:empty{display:none}
+#optional-experiment summary,details.panel>summary{cursor:pointer;font-weight:900;color:#304dc3;min-height:30px}.lesson-bottom{margin-top:16px}.lesson-copy h2{margin-top:24px}
+@media(max-width:650px){.course-topics{grid-template-columns:1fr}.topic-steps{display:grid;grid-template-columns:1fr 1fr}.topic-steps .btn{font-size:12px!important;padding:9px!important}.guided-field input{width:100%}}

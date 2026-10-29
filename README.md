@@ -1,6 +1,6 @@
-# Quantum Quest: Kavin's Physics Adventure
+# Physics
 
-A local-first, buildless Sec 3 Physics platform adventure for Chapter 1: Physical Quantities, Units and Measurements.
+A local-first, buildless Sec 3 Physics course for Chapter 1: Physical Quantities, Units and Measurements.
 
 ## Run locally
 
@@ -12,35 +12,21 @@ python3 -m http.server 8766 --bind 127.0.0.1
 
 Open http://localhost:8766. Use the same browser and address to retain progress. No packages or build step are needed. Sign in with the same approved Google account as the maths game. Firebase Authentication manages login, and Firestore syncs progress to the player account. Game art and lessons are local; sign-in, cloud saves and optional YouTube videos need internet access. Physics uses a separate subject payload and account-specific browser cache. See [account setup and recovery](ACCOUNT-SETUP.md).
 
-## Play the quest
+## Learn the chapter
 
-- Click the world map to focus it. Arrow keys or A/D move; Space jumps; E enters the nearest world. Touch controls and direct portal links are also available.
-- Choose a cyan, pink or lime astronaut suit on the home screen.
-- Each world follows Mission -> Learn + watch -> Understand + try -> Prove + capture.
-- Experiments, skills and crystals record learning progress. New cash XP comes from completed assessments under the shared policy; old milestone XP is preserved.
-- Every 250 XP advances a player level. Replaying completed skills does not farm XP.
-- Capture a world crystal by completing its experiment and a flawless ten-question qualification run. Captures have a reward screen and appear on the trophy shelf.
-- Memory quests unlock after capture, at approximately days 1, 3, 7, 14 and 30. Passing with ten of ten independent answers earns a one-time 100 XP seal at each stage. A recall error restarts the ladder with the next attempt on the following day. Replays cannot advance the schedule early.
-- Seven captured crystals unlock the Glitch Engine: a 35-question boss challenge, one application per skill family. The completed 35-question assessment follows the shared score curve, worth up to 350 XP; there is no extra boss cash bonus.
-- Guided video recap questions support learning and do not award mastery or XP.
+Seven topics follow the chapter: quantities and units, prefixes, conversions, instruments, readings and measurements, pendulums, and vectors.
 
-## Included
+Each topic follows Learn → Worked examples → Practice → Topic check. Guided examples save unfinished answers. Practice permits hints and retries. The independent check requires ten correct answers without hints; an error ends the run, explains the correction and requires a fresh attempt. Completing the worked steps and check unlocks the next topic. Previously started topics remain accessible.
 
-- Seven stations with briefing, original lesson notes, worked examples, an interactive experiment and generated independent checks.
-- SI quantities and units, prefixes and standard form, dimensional conversions, instrument selection, scales and parallax, pendulum timing, scalars and parallel vectors.
-- Original SVG apparatus, keyboard/touch controls, pause/step animation and reduced-motion support.
-- Topic practice with hints, alongside strict qualification runs.
-- Saved in-progress questions, first-try versus assisted tracking, a personal journal and progress JSON export.
-- Google player accounts, cross-device Physics saves, and a live teacher dashboard using the maths Firebase project and its existing access rules.
-- A ten-question mixed quick check, untimed or timed for ten minutes.
-- Seven original pixel-art platform worlds, player movement, suit colours, skill gems, crystal captures, levels, boss battle and scheduled memory seals.
-- Seven topic-matched concept videos and a bonus pendulum-wave YouTube Short, with creator attribution, click-to-load players and direct link fallbacks.
+After all seven topics, the chapter check samples all 35 skill families. Scheduled recall supports later revision. Optional experiments and videos supplement the teaching. Explanation and drawing prompts should also be attempted on paper; the app does not automatically grade these.
 
-A station is qualified through a single 10/10 clean run; its experiment is also required for a crystal. One error or hint resets the run. First-try stats retain earlier mistakes.
+XP and subject-specific gaming tokens use the existing reward policy. Old balances, reward IDs, qualifications, experiment completions and saved sessions are preserved. Repeating assessments only rewards improvements. Existing experiment completion satisfies the supporting-work requirement; new learners complete the guided worked steps.
 
-## Current limits
+Parent and student views share the course interface; parent analytics remain in the separate dashboard.
 
-The quick check and boss battle do not replace the proposed full structured mock paper. Free-text explanations are taught through notes and structured questions rather than automatically graded. The pendulum animation is a teaching model, not a reaction-time measurement tool. Videos were selected using creator titles/descriptions and topic fit; a full viewing review is still pending. One embedded pendulum player was verified to load and expose playback controls; availability of other embeds may vary. Memory quests are in-app dates, with no external reminders or notifications.
+## Verify
+
+Run `node check-course.cjs`, `node check-content.cjs`, `node check-mastery.cjs`, `node check-game.cjs`, `node check-cloud.cjs`, `node check-xp.cjs`, and `node check-tokens.cjs`.
 
 ## GitHub Pages
 
