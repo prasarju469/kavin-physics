@@ -7,7 +7,7 @@
   const readLocal=key=>{try{const d=JSON.parse(localStorage.getItem(key)||'null');return d?.version===1?d:null;}catch{storageOK=false;return null;}};
   G.sync(data);let previousLevel=G.rank(data).level;
   window.addEventListener('physics-rewards-merged',e=>{PhysicsRewards.merge(data,e.detail);try{localStorage.setItem(KEY,JSON.stringify(data));}catch{}hud();});
-  const save=()=>{const claims=G.sync(data),level=G.rank(data).level;if(claims.length)setTimeout(()=>celebrate(claims[0]),0);else if(level>previousLevel)setTimeout(()=>toast('LEVEL UP! You reached level '+level+' ⚡'),0);previousLevel=level;data.updated=Date.now();try{localStorage.setItem(KEY,JSON.stringify(data));}catch{storageOK=false;showStorageWarning();}if(booted)C.push(data);hud();};
+  const save=()=>{if(C.preview){hud();return;}const claims=G.sync(data),level=G.rank(data).level;if(claims.length)setTimeout(()=>celebrate(claims[0]),0);else if(level>previousLevel)setTimeout(()=>toast('LEVEL UP! You reached level '+level+' ⚡'),0);previousLevel=level;data.updated=Date.now();try{localStorage.setItem(KEY,JSON.stringify(data));}catch{storageOK=false;showStorageWarning();}if(booted)C.push(data);hud();};
   function showStorageWarning(){if($('.storage-warning'))return;const b=document.createElement('div');b.className='storage-warning';b.setAttribute('role','status');b.textContent='Browser storage is unavailable. You can play, but progress may not survive closing or reloading this page.';$('.topbar').after(b);}
   const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const expectedSkills=id=>Q.templates[id].map(fn=>fn().skill);

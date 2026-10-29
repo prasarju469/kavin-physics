@@ -32,7 +32,7 @@ window.PhysicsCloud=(()=>{
     const email=norm(user.email);let role;
     try{await db.collection('users').limit(1).get({source:'server'});role='teacher';}
     catch(e){if(e.code!=='permission-denied')throw e;await db.collection('users').doc(email).get({source:'server'});role='student';}
-    await window.PlayerProfile?.connect({auth,db,user,role});C.email=email;C.name=window.PlayerProfile?.name()||user.displayName||email;C.role=role;account=user.uid;window.LearningTracker?.start({subject:'physics',email,auth,db,role});
+    const view=await window.LearnerView?.select({auth,db,user});C.preview=!!view?.parent;if(!C.preview)await window.PlayerProfile?.connect({auth,db,user,role});C.email=email;C.name=C.preview?view.name:(window.PlayerProfile?.name()||user.displayName||email);C.role=role;account=user.uid;if(!C.preview)window.LearningTracker?.start({subject:'physics',email,auth,db,role});
   }
   function login(){
     return new Promise(resolve=>{
@@ -44,6 +44,7 @@ window.PhysicsCloud=(()=>{
     try{const d=JSON.parse(record?.physics?.data||'null');return d?.version===1?d:null;}catch{return null;}
   };
   C.load=async local=>{
+    if(C.preview)return window.LearnerView.data('physics');
     if(!C.enabled)return local;
     const snap=await db.collection('users').doc(C.email).get({source:'server'}),remote=decode(snap.exists?snap.data():null);
     if(remote&&(!local||(remote.updated||0)>=(local.updated||0))){if(local)window.PhysicsRewards.merge(remote,local);notify('saved');return remote;}
@@ -51,7 +52,7 @@ window.PhysicsCloud=(()=>{
   };
   async function write(){
     if(writing)return writing;
-    if(!pending||!auth?.currentUser||auth.currentUser.uid!==account)return;
+    if(C.preview||!pending||!auth?.currentUser||auth.currentUser.uid!==account)return;
     const snapshot=pending,accountUid=account;pending=null;notify('saving');
     writing=window.SharedRewards.saveSubject(db,db.collection('users').doc(C.email),'physics',snapshot,window.PhysicsRewards,{name:C.name,role:C.role})
       .then(()=>{if(auth.currentUser?.uid!==accountUid)return;if(pending)window.PhysicsRewards.merge(pending,snapshot);window.dispatchEvent(new CustomEvent('physics-rewards-merged',{detail:snapshot}));notify(pending?'pending':'saved');})
@@ -60,7 +61,7 @@ window.PhysicsCloud=(()=>{
     return writing;
   }
   C.push=data=>{
-    if(!C.enabled||!C.email)return;
+    if(C.preview||!C.enabled||!C.email)return;
     pending=JSON.parse(JSON.stringify(data));notify('pending');clearTimeout(timer);
     timer=setTimeout(()=>C.flush().catch(()=>{}),1000);
   };
