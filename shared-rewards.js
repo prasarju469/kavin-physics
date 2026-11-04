@@ -14,6 +14,7 @@ function init(s,subject,opening=0,seeds={}){
  return recompute(s);
 }
 function award(s,id,correct,questions){if(!s.rewardLedger)throw Error('Initialise the XP ledger first');if(typeof id!=='string'||!id||id.length>200)throw Error('Stable assessment ID required');const target=entitlement(correct,questions),l=s.rewardLedger,a=l.activities[id]||(l.activities[id]={baselineXp:0,bestXp:0});if(a.questions&&a.questions!==questions)throw Error('Assessment question count changed; use a new content ID');a.questions=questions;const earned=Math.max(0,target-a.bestXp);a.bestXp=Math.max(a.bestXp,target);a.bestScore=Math.max(a.bestScore||0,correct);recompute(s);return earned;}
+function complete(s,id,correct,questions){entitlement(correct,questions);const previous=s.rewardLedger?.activities?.[id]?.bestScore||0,earned=award(s,id,questions,questions),a=s.rewardLedger.activities[id];a.bestScore=Math.max(previous,correct);a.completionCredited=true;return earned;}
 function mergeInto(target,other){
  const a=target.rewardLedger,b=other.rewardLedger;if(!a||!b||a.version!==b.version||a.subject!==b.subject)throw Error('Cannot merge incompatible XP ledgers');
  a.openingXp=Math.max(a.openingXp,b.openingXp);a.carriedXp=Math.max(number(a.carriedXp),number(b.carriedXp));
@@ -31,5 +32,5 @@ async function saveSubject(db,ref,field,incoming,policy,extra={}){
 }
 const dollars=xp=>number(xp)/XP_PER_DOLLAR;
 const cash=xp=>'$'+dollars(xp).toFixed(number(xp)%5?3:2);
-const api={VERSION,XP_PER_DOLLAR,TABLE,entitlement,init,award,mergeInto,saveSubject,dollars,cash};root.SharedRewards=api;if(typeof module!=='undefined')module.exports=api;
+const api={VERSION,XP_PER_DOLLAR,TABLE,entitlement,complete,init,award,mergeInto,saveSubject,dollars,cash};root.SharedRewards=api;if(typeof module!=='undefined')module.exports=api;
 })(typeof window==='undefined'?globalThis:window);

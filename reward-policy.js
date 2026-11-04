@@ -7,7 +7,7 @@ function ensure(d){const seeds={};for(const [id,t] of Object.entries(d.mastery?.
 for(const arcade of [d.arcade,d.mastery?.legacy?.arcade]){for(const [id]of Object.entries(arcade?.claims||{}))seeds['physics:topic:'+id]=100;for(const [id,r]of Object.entries(arcade?.reviews||{}))for(let n=1;n<=Math.max(r.stage||0,r.rewardedStage||0);n++)seeds['physics:recall:'+id+':'+n]=100;}
 for(const h of d.history||[])if(h.total>0&&!h.reset){const id=h.mode==='memory'?null:h.mode==='boss'?'physics:boss':h.station?'physics:topic:'+h.station:'physics:mixed';if(id)seeds[id]=Math.max(seeds[id]||0,R.entitlement(Math.max(0,Math.min(h.total,h.clean||0)),h.total));}
 if(d.arcade?.boss)seeds['physics:boss']=350;const total=R.init(d,'physics',legacy(d),seeds);T?.wallet(d,'physics');return total;}
-function award(d,id,correct,n){ensure(d);const earned=R.award(d,'physics:'+id,correct,n);T?.wallet(d,'physics');return earned;}
+function award(d,id,correct,n){ensure(d);const earned=R.complete(d,'physics:'+id,correct,n);T?.wallet(d,'physics');return earned;}
 function merge(a,b){ensure(a);ensure(b);const total=R.mergeInto(a,b);if(T)T.merge(a,b);return total;}
 const api={ensure,award,merge,legacy,total:ensure};root.PhysicsRewards=api;if(typeof module!=='undefined')module.exports=api;
 })(typeof window==='undefined'?globalThis:window);
