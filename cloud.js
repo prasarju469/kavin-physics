@@ -2,7 +2,7 @@
 window.PhysicsCloud=(()=>{
   const config=window.PHYSICS_CONFIG||{};
   const C={enabled:!!config.firebase,email:'',name:'',role:'local',status:'local',message:''};
-  let auth,db,timer,pending=null,writing=null,account=null,offAccount=null;
+  let auth,db,timer,pending=null,writing=null,account=null,offAccount=null,retryTimer=null,retryDelay=1500;
   const notify=(status,message='')=>{C.status=status;C.message=message;window.dispatchEvent(new Event('physics-cloud-status'));};
   const norm=e=>String(e||'').trim().toLowerCase();
   const screen=html=>{document.getElementById('main').innerHTML=`<section class="auth-screen"><div class="auth-orbit">⚡</div><div class="eyebrow">QUANTUM QUEST · PLAYER LOGIN</div><div class="panel auth-panel">${html}</div></section>`;};
@@ -47,16 +47,17 @@ window.PhysicsCloud=(()=>{
     if(C.preview)return window.LearnerView.data('physics');
     if(!C.enabled)return local;
     const snap=await db.collection('users').doc(C.email).get({source:'server'}),remote=decode(snap.exists?snap.data():null);
-    if(remote&&(!local||(remote.updated||0)>=(local.updated||0))){if(local)window.PhysicsRewards.merge(remote,local);notify('saved');return remote;}
+    if(remote&&(!local||(remote.updated||0)>=(local.updated||0))){const before=JSON.stringify(remote);if(local)window.PhysicsRewards.merge(remote,local);window.PhysicsRewards.ensure(remote);if(JSON.stringify(remote)!==before)C.push(remote);notify('saved');return remote;}
     if(local&&remote)window.PhysicsRewards.merge(local,remote);return local;
   };
+  function scheduleRetry(){if(retryTimer||!pending||C.preview)return;retryTimer=setTimeout(()=>{retryTimer=null;C.flush().catch(()=>{});},retryDelay);retryDelay=Math.min(30000,retryDelay*2);retryTimer?.unref?.();}
   async function write(){
     if(writing)return writing;
     if(C.preview||!pending||!auth?.currentUser||auth.currentUser.uid!==account)return;
     const snapshot=pending,accountUid=account;pending=null;notify('saving');
     writing=window.SharedRewards.saveSubject(db,db.collection('users').doc(C.email),'physics',snapshot,window.PhysicsRewards,{name:C.name,role:C.role})
-      .then(()=>{if(auth.currentUser?.uid!==accountUid)return;if(pending)window.PhysicsRewards.merge(pending,snapshot);window.dispatchEvent(new CustomEvent('physics-rewards-merged',{detail:snapshot}));notify(pending?'pending':'saved');})
-      .catch(e=>{if(!pending)pending=snapshot;notify('error',codeMessage(e));throw e;})
+      .then(()=>{if(auth.currentUser?.uid!==accountUid)return;if(pending)window.PhysicsRewards.merge(pending,snapshot);window.dispatchEvent(new CustomEvent('physics-rewards-merged',{detail:snapshot}));retryDelay=1500;clearTimeout(retryTimer);retryTimer=null;notify(pending?'pending':'saved');})
+      .catch(e=>{if(!pending)pending=snapshot;scheduleRetry();notify('error',codeMessage(e));throw e;})
       .finally(()=>{writing=null;});
     return writing;
   }
@@ -65,14 +66,14 @@ window.PhysicsCloud=(()=>{
     pending=JSON.parse(JSON.stringify(data));notify('pending');clearTimeout(timer);
     timer=setTimeout(()=>C.flush().catch(()=>{}),1000);
   };
-  C.flush=async()=>{clearTimeout(timer);if(writing)await writing;while(pending&&auth?.currentUser?.uid===account)await write();};
+  C.flush=async()=>{clearTimeout(timer);clearTimeout(retryTimer);retryTimer=null;if(writing)await writing;while(pending&&auth?.currentUser?.uid===account)await write();};
   C.signOut=async()=>{await window.LearningTracker?.flush().catch(()=>{});window.LearningTracker?.stop();if(offAccount)offAccount();try{await C.flush();}catch{/* Account-specific local cache keeps unsent progress. */}clearTimeout(timer);pending=null;await auth.signOut();location.reload();};
   C.watchStudents=(onData,onError)=>{
     if(C.role!=='teacher'){onError(new Error('Teacher access required.'));return ()=>{};}
     return db.collection('users').onSnapshot(snap=>onData(snap.docs.filter(x=>x.id!==C.email&&x.data().role!=='teacher').map(x=>({email:x.id,name:x.data().name||x.id,progress:decode(x.data()),updated:x.data().physics?.updated||0}))),onError);
   };
-  window.addEventListener('online',()=>C.flush().catch(()=>{}));
-  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')C.flush().catch(()=>{});});
+  window.addEventListener('online',()=>C.flush().catch(()=>{}));window.addEventListener('focus',()=>C.flush().catch(()=>{}));
+  document.addEventListener('visibilitychange',()=>{C.flush().catch(()=>{});});
   C.showBootError=()=>{screen('<h1>PROGRESS IS SAFE.</h1><p>Your cloud save could not be checked. Reconnect and retry before starting so an older copy does not replace your progress.</p><button class="btn primary" id="auth-reload">Reconnect</button><button class="btn" id="auth-signout">Switch account</button>');document.getElementById('auth-reload').onclick=()=>location.reload();document.getElementById('auth-signout').onclick=C.signOut;};
   return C;
 })();

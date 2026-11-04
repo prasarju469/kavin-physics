@@ -22,15 +22,19 @@ function mergeInto(target,other){
  // Reconciliation must never lower a balance, even when old migrations had different baselines.
  const floor=Math.max(number(a.total),number(b.total));let total=recompute(target);if(total<floor){a.carriedXp+=floor-total;total=recompute(target);}return total;
 }
+const transient=e=>['unavailable','deadline-exceeded','aborted','resource-exhausted','internal','cancelled','unknown'].includes(String(e?.code||'').replace(/^firestore\//,''))||/offline|network|connection.*(?:lost|failed)|failed to fetch/i.test(e?.message||'');
+function retryWait(ms){return new Promise(resolve=>{let timer;const done=()=>{clearTimeout(timer);root.removeEventListener?.('online',done);root.removeEventListener?.('focus',done);resolve();};timer=setTimeout(done,ms);root.addEventListener?.('online',done,{once:true});root.addEventListener?.('focus',done,{once:true});});}
+async function retryTransaction(db,work,canWrite,wait=retryWait){let delay=1500;for(;;){if(!canWrite())throw Error('Read-only account or account changed');try{return await db.runTransaction(work);}catch(e){if(!canWrite()||!transient(e))throw e;await wait(delay);delay=Math.min(30000,delay*2);}}}
+function mergeSaved(incoming,old,policy){if((old.updated||0)>(incoming.updated||0)){const local=copy(incoming);for(const key of Object.keys(incoming))delete incoming[key];Object.assign(incoming,copy(old));return policy.merge(incoming,local);}return policy.merge(incoming,old);}
 async function saveSubject(db,ref,field,incoming,policy,extra={}){
  policy.ensure(incoming);
  await db.runTransaction(async tx=>{const snap=await tx.get(ref),record=snap.exists?snap.data():{},encoded=field?record[field]?.data:record.data;
-  if(encoded){let old;try{old=JSON.parse(encoded)}catch{throw Error('Existing cloud progress could not be decoded; refusing to overwrite it');}policy.merge(incoming,old);}
+  if(encoded){let old;try{old=JSON.parse(encoded)}catch{throw Error('Existing cloud progress could not be decoded; refusing to overwrite it');}mergeSaved(incoming,old,policy);}
   const value={data:JSON.stringify(incoming),updated:incoming.updated||Date.now(),schema:1};
   tx.set(ref,field?{...extra,[field]:value}:{...extra,data:value.data,updated:value.updated},{merge:true});
  });return incoming;
 }
 const dollars=xp=>number(xp)/XP_PER_DOLLAR;
 const cash=xp=>'$'+dollars(xp).toFixed(number(xp)%5?3:2);
-const api={VERSION,XP_PER_DOLLAR,TABLE,entitlement,complete,init,award,mergeInto,saveSubject,dollars,cash};root.SharedRewards=api;if(typeof module!=='undefined')module.exports=api;
+const api={VERSION,XP_PER_DOLLAR,TABLE,entitlement,complete,init,award,mergeInto,mergeSaved,retryTransaction,saveSubject,dollars,cash};root.SharedRewards=api;if(typeof module!=='undefined')module.exports=api;
 })(typeof window==='undefined'?globalThis:window);
